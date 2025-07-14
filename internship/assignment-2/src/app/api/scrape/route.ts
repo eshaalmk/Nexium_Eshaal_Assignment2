@@ -21,11 +21,58 @@ export async function POST(req: NextRequest) {
     const $ = cheerio.load(html);
 
     // Adjust selector to your blog's structure
-    const fullText = $("article p")
+    // Broader set of selectors to cover more layouts
+const selectors = [
+  "article p",
+  ".entry-content p",
+  ".post-content p",
+  ".blog-content p",
+  ".content-area p",
+  "main p",
+  ".post p",
+  ".et_pb_text_inner p"
+];
+
+let paragraphs: string[] = [];
+let maxLength = 0;
+
+selectors.forEach((selector) => {
+  const elements = $(selector);
+  if (elements.length) {
+    const textArr = elements
       .map((i, el) => $(el).text().trim())
       .get()
-      .filter(Boolean)
-      .join("\n\n");
+      .filter(Boolean);
+
+    const totalLength = textArr.join(" ").length;
+
+    if (totalLength > maxLength) {
+      paragraphs = textArr;
+      maxLength = totalLength;
+    }
+  }
+});
+
+
+// 🛡️ Fallback: if no paragraphs matched, try all <p> tags in body (excluding nav/header/footer)
+if (paragraphs.length === 0) {
+  const fallbackParagraphs = $("body p")
+    .filter((_, el) => {
+      const parent = $(el).parents();
+      return !parent.is("header, nav, footer, aside");
+    })
+    .map((_, el) => $(el).text().trim())
+    .get()
+    .filter(Boolean);
+
+  if (fallbackParagraphs.length > 0) {
+    paragraphs = fallbackParagraphs;
+  }
+}
+
+const fullText = paragraphs.join("\n\n");
+
+
 
     const summary = summarizeText(fullText);
     const translated = translateToUrdu(summary);

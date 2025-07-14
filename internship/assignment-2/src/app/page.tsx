@@ -70,7 +70,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <main className="max-w-3xl mx-auto p-6 space-y-6 bg-gradient-to-br from-muted to-background rounded-xl shadow-xl transition-all duration-300">
+    <main className="max-w-3xl mx-auto p-6 space-y-6 bg-emerald-50 dark:bg-background rounded-xl shadow-xl transition-all duration-300">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
           📝 Blog Summarizer
