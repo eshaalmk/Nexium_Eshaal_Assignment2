@@ -30,6 +30,7 @@ export default function HomePage() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<ScrapeResult | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -127,41 +128,52 @@ export default function HomePage() {
           </Card>
         </motion.div>
       )}
-
       {history.length > 0 && (
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold flex items-center gap-2 mt-6">
-            📜 Recent Summaries
-          </h2>
-          {history.map((item) => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.25 }}
-            >
-              <Card className="bg-card/90 backdrop-blur border border-border shadow-md hover:shadow-lg transition-all rounded-lg">
-                <CardContent className="p-4 space-y-2">
-                  <p className="text-xs text-muted-foreground">
-                    {new Date(item.created_at).toLocaleString()}
-                  </p>
-                  <p className="text-sm font-medium underline">{item.url}</p>
-                  <Section
-                    title="Summary"
-                    content={item.summary_en}
-                    onCopy={() => copyToClipboard(item.summary_en)}
-                  />
-                  <Section
-                    title="Urdu Translation"
-                    content={item.summary_ur}
-                    onCopy={() => copyToClipboard(item.summary_ur)}
-                  />
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-      )}
+  <div className="mt-4">
+    <Button
+      variant="outline"
+      onClick={() => setShowHistory((prev) => !prev)}
+    >
+      {showHistory ? "Hide Recent Summaries" : "Show Recent Summaries"}
+    </Button>
+  </div>
+)}
+
+      {showHistory && history.length > 0 && (
+  <div className="space-y-4 mt-4">
+    <h2 className="text-xl font-semibold flex items-center gap-2">
+      📜 Recent Summaries
+    </h2>
+    {history.map((item) => (
+      <motion.div
+        key={item.id}
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.25 }}
+      >
+        <Card className="bg-card/90 backdrop-blur border border-border shadow-md hover:shadow-lg transition-all rounded-lg">
+          <CardContent className="p-4 space-y-2">
+            <p className="text-xs text-muted-foreground">
+              {new Date(item.created_at).toLocaleString()}
+            </p>
+            <p className="text-sm font-medium underline">{item.url}</p>
+            <Section
+              title="Summary"
+              content={item.summary_en}
+              onCopy={() => copyToClipboard(item.summary_en)}
+            />
+            <Section
+              title="Urdu Translation"
+              content={item.summary_ur}
+              onCopy={() => copyToClipboard(item.summary_ur)}
+            />
+          </CardContent>
+        </Card>
+      </motion.div>
+    ))}
+  </div>
+)}
+
     </main>
   );
 }

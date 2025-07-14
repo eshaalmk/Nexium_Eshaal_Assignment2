@@ -112,11 +112,20 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
-
 @layer base {
+  html {
+    @apply min-h-screen text-foreground transition-colors duration-500;
+  }
+
   body {
-    @apply bg-emerald-100 dark:bg-background text-foreground min-h-screen;
+    @apply min-h-screen bg-gradient-to-br from-emerald-100 via-sky-100 to-purple-100;
+  }
+
+  html.dark body {
+    @apply bg-background bg-none;
   }
 }
+
+
 
 
